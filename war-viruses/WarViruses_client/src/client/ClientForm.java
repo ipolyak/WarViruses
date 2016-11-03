@@ -29,6 +29,7 @@ public class ClientForm extends javax.swing.JFrame {
     InetAddress ip = null;
     
     RecvThread RT = null;
+    String group_name = "";
     
     public ClientForm() {
         initComponents();
@@ -187,6 +188,7 @@ public class ClientForm extends javax.swing.JFrame {
     
     private void DisconnectFromServer() {
         Sender SR = new Sender(jTextArea1, cs);
+        SR.SetGroupName(group_name);
                     
         if(SR.SendCommand("DG") == SEND_FAILED) {
             Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
@@ -201,10 +203,11 @@ public class ClientForm extends javax.swing.JFrame {
 
     private void JoinToGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JoinToGameActionPerformed
         if(!IsConnected) {
+            group_name = "Toe";
             ConnectToServer();
             
             Sender SR = new Sender(jTextArea1, cs);  
-            SR.SetGroupName("Toe");
+            SR.SetGroupName(group_name);
             
             if(SR.SendCommand("JG") == SEND_FAILED) {
                 Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
@@ -227,10 +230,11 @@ public class ClientForm extends javax.swing.JFrame {
 
     private void CreateNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateNewGameActionPerformed
         if(!IsConnected) {
+            group_name = "Tic";
             ConnectToServer();
             
             Sender SR = new Sender(jTextArea1, cs);
-            SR.SetGroupName("Tic");
+            SR.SetGroupName(group_name);
             
             if(SR.SendCommand("CNG") == SEND_FAILED) {
                 Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);

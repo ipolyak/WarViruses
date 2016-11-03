@@ -61,7 +61,7 @@ public class RecvThread extends Thread{
     private void Disconnect() {
         IsClientDisconnect = true;
         
-        String log_info = group_name + " exited from game!";
+        String log_info = group_name.concat(" exited from game!");
         Log.AddToLog(log_info, Logs, MY_NAME);
     }
     
@@ -99,6 +99,7 @@ public class RecvThread extends Thread{
         
         String command_info = "";
         String command = "";
+        
         try {
             command_info = sdis.readUTF();
             command = sdis.readUTF();
