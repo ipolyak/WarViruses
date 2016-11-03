@@ -26,6 +26,7 @@ public class Sender {
     
     JTextArea Logs;
     Socket cs;
+    String group_name = "";
     
     OutputStream cos = null; // Client Output Stream
     
@@ -40,6 +41,10 @@ public class Sender {
                 Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    public void SetGroupName(String _group_name) {
+        group_name = _group_name;
     }
     
     /*
@@ -64,6 +69,8 @@ public class Sender {
             try {
                 cdos.writeUTF(SERVICE_INFO);
                 cdos.writeUTF(command);
+                cdos.writeUTF(group_name);
+                
                 Log.AddToLog("Service command send", Logs, MY_NAME);
             } catch (IOException ex) {
                 Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);

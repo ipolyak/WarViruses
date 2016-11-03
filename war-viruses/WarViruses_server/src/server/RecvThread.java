@@ -24,9 +24,12 @@ public class RecvThread extends Thread{
     
     Socket cs = null;
     InputStream sis = null;
+    OutputStream sos = null;
     
     JTextArea Logs;
     boolean IsClientDisconnect = false;
+    
+    String group_name = "";
     
     public RecvThread(Socket _cs,
                       JTextArea _Logs) {
@@ -35,7 +38,8 @@ public class RecvThread extends Thread{
 
         if (cs != null) {
             try {
-                sis = cs.getInputStream(); // Get the output stream. Now we may receive the data from client
+                sis = cs.getInputStream();
+                sos = cs.getOutputStream();
             } catch (IOException ex) {
                 Logger.getLogger(RecvThread.class.getName()).log(Level.SEVERE, "Error of getting intput stream", ex);
             }
@@ -43,10 +47,25 @@ public class RecvThread extends Thread{
     }
     
     private void SendReplyToPlayer(String reply) {
+        if (cs != null) {
+            DataOutputStream sdos = new DataOutputStream(sos);
+
+            try {
+                sdos.writeUTF(reply);
+            } catch (IOException ex) {
+                Logger.getLogger(RecvThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private void Disconnect() {
+        IsClientDisconnect = true;
         
+        String log_info = group_name + " exited from game!";
+        Log.AddToLog(log_info, Logs, MY_NAME);
     }
     
-    public void WrongCommand() {
+    private void WrongCommand() {
         SendReplyToPlayer("WC");
     }
     
@@ -59,7 +78,22 @@ public class RecvThread extends Thread{
            1.8 "DN" - Disconnect from server is not OK
            1.9 "WC" - Wrong Command
      */
-       
+    
+    private void HandleServiceCommand(String command) {
+        if(command.equals("CNG")) {
+            
+        } else if(command.equals("JG")) {
+            
+        } else if(command.equals("DG")) {
+            Disconnect();
+        }
+    }
+    
+    private void HandleGameCommand(String command) {
+        
+    }
+    
+        
     private void HandlerOfClient() {
         DataInputStream sdis = new DataInputStream(sis);
         
@@ -70,9 +104,10 @@ public class RecvThread extends Thread{
             command = sdis.readUTF();
             
             if(command_info.equals("SI")) {
-
+                group_name = sdis.readUTF();
+                HandleServiceCommand(command);
             } else if(command_info.equals("GI")) {
-                
+                HandleGameCommand(command);
             } else {
                 WrongCommand();
             }

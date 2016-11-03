@@ -28,6 +28,8 @@ public class ClientForm extends javax.swing.JFrame {
     int port = 4445;
     InetAddress ip = null;
     
+    RecvThread RT = null;
+    
     public ClientForm() {
         initComponents();
         jTable1.setShowGrid(true);
@@ -184,16 +186,31 @@ public class ClientForm extends javax.swing.JFrame {
     }
     
     private void DisconnectFromServer() {
+        Sender SR = new Sender(jTextArea1, cs);
+                    
+        if(SR.SendCommand("DG") == SEND_FAILED) {
+            Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
+        } else {
+            IsConnected = false;
+            if(RT != null) {
+                RT.stop();
+            }
+            Log.AddToLog("Client disconnected from server!", jTextArea1, MY_NAME);
+        }
     }
 
     private void JoinToGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JoinToGameActionPerformed
         if(!IsConnected) {
             ConnectToServer();
             
-            Sender SR = new Sender(jTextArea1, cs);
-        
+            Sender SR = new Sender(jTextArea1, cs);  
+            SR.SetGroupName("Toe");
+            
             if(SR.SendCommand("JG") == SEND_FAILED) {
                 Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
+            } else {
+                RT = new RecvThread(cs, jTextArea1, jTable1);
+                RT.start();
             }
         } else {
             Log.AddToLog("Game already runnung!", jTextArea1, MY_NAME);
@@ -213,7 +230,8 @@ public class ClientForm extends javax.swing.JFrame {
             ConnectToServer();
             
             Sender SR = new Sender(jTextArea1, cs);
-        
+            SR.SetGroupName("Tic");
+            
             if(SR.SendCommand("CNG") == SEND_FAILED) {
                 Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
             }
