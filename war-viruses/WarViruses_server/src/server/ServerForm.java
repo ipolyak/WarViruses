@@ -5,15 +5,18 @@
  */
 package server;
 
+import server.ServerThread;
+
 /**
  *
  * @author Олег
  */
 public class ServerForm extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ServerForm
-     */
+    final String MY_NAME = "ServerThread";
+    
+    ServerThread st = null;
+        
     public ServerForm() {
         initComponents();
     }
@@ -30,61 +33,85 @@ public class ServerForm extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTextArea1 = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jButton1.setText("StartServer");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                StartServer(evt);
+            }
+        });
 
         jButton2.setText("StopServer");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"10", null, null, null, null, null, null, null, null, null, null},
-                {"9", null, null, null, null, null, null, null, null, null, null},
-                {"8", null, null, null, null, null, null, null, null, null, null},
-                {"7", null, null, null, null, null, null, null, null, null, null},
-                {"6", null, null, null, null, null, null, null, null, null, null},
-                {"5", null, null, null, null, null, null, null, null, null, null},
-                {"4", null, null, null, null, null, null, null, null, null, null},
-                {"3", null, null, null, null, null, null, null, null, null, null},
-                {"2", null, null, null, null, null, null, null, null, null, null},
-                {"1", null, null, null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "k"
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                StopServer(evt);
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        });
+
+        jTextArea1.setEditable(false);
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jLabel1.setText("Logs");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(75, 75, 75)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
-                .addGap(77, 77, 77)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(476, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(75, 75, 75)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton2)
+                            .addComponent(jButton1))
+                        .addGap(49, 49, 49)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(359, 359, 359)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(563, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(50, 50, 50)
+                .addGap(16, 16, 16)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton1)
                         .addGap(62, 62, 62)
-                        .addComponent(jButton2)))
-                .addContainerGap(187, Short.MAX_VALUE))
+                        .addComponent(jButton2))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(164, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void StartServer(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartServer
+        if (st == null) {
+            st = new ServerThread(jTextArea1);
+            st.StartServer();
+        } else {
+            Log.AddToLog("Server already started!", jTextArea1, MY_NAME);
+        }
+    }//GEN-LAST:event_StartServer
+
+    private void StopServer(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StopServer
+        if (st != null) {
+            st.StopServer();
+            st = null;
+        } else {
+            Log.AddToLog("Server is not started yet!", jTextArea1, MY_NAME);
+        }
+    }//GEN-LAST:event_StopServer
 
     /**
      * @param args the command line arguments
@@ -124,7 +151,8 @@ public class ServerForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
