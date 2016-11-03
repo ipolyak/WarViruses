@@ -189,14 +189,14 @@ public class ClientForm extends javax.swing.JFrame {
     private void JoinToGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JoinToGameActionPerformed
         if(!IsConnected) {
             ConnectToServer();
+            
+            Sender SR = new Sender(jTextArea1, cs);
+        
+            if(SR.SendCommand("JG") == SEND_FAILED) {
+                Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
+            }
         } else {
             Log.AddToLog("Game already runnung!", jTextArea1, MY_NAME);
-        }
-        
-        Sender SR = new Sender(jTextArea1, cs);
-        
-        if(SR.SendCommand("JG") == SEND_FAILED) {
-            Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
         }
     }//GEN-LAST:event_JoinToGameActionPerformed
 
@@ -211,14 +211,14 @@ public class ClientForm extends javax.swing.JFrame {
     private void CreateNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateNewGameActionPerformed
         if(!IsConnected) {
             ConnectToServer();
+            
+            Sender SR = new Sender(jTextArea1, cs);
+        
+            if(SR.SendCommand("CNG") == SEND_FAILED) {
+                Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
+            }
         } else {
             Log.AddToLog("Game already running!", jTextArea1, MY_NAME);
-        }
-        
-        Sender SR = new Sender(jTextArea1, cs);
-        
-        if(SR.SendCommand("CNG") == SEND_FAILED) {
-            Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
         }
     }//GEN-LAST:event_CreateNewGameActionPerformed
 
