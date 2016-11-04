@@ -12,5 +12,7 @@ package GameTools;
  */
 
 public class GameRules {
-    
+    public static boolean GameIsEnd() {
+        return false;
+    }
 }

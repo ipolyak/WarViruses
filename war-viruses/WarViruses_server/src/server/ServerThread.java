@@ -21,6 +21,8 @@ import java.util.Hashtable;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import LogTools.Log;
+import java.io.DataOutputStream;
+import java.util.Map;
 import server.RecvThread;
 
 /**
@@ -36,6 +38,10 @@ public class ServerThread extends Thread {
     int port = 4445;
     InetAddress ip = null;
     boolean IsStopped = true;
+    Hashtable<String, Socket> Players = new Hashtable<String, Socket>();
+    Hashtable<Socket, RecvThread> RecvThreads = new Hashtable<Socket, RecvThread>();
+    
+    GameThread GT;
 
     public ServerThread(JTextArea _Logs) {
         Logs = _Logs;
@@ -54,6 +60,9 @@ public class ServerThread extends Thread {
             Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, "ServerThread: Error in create server_socket", ex);
         }
         
+        GT = new GameThread(Logs, Players);
+        GT.start();
+        
         Log.AddToLog("Creating of server thread complete!", Logs, MY_NAME);
     }
     
@@ -71,16 +80,36 @@ public class ServerThread extends Thread {
             
             RecvThread RT = new RecvThread(socket_client, Logs);
             RT.start();
+            
+            RecvThreads.put(socket_client, RT);
         }
     }
 
     synchronized void StopServer() {
         IsStopped = true;
-        Log.AddToLog("Server was stopped!", Logs, MY_NAME);
+        GT.stop();
+        
+        if (!RecvThreads.isEmpty()) {
+            for (Map.Entry<Socket, RecvThread> entrySet : RecvThreads.entrySet()) {
+                entrySet.getValue().stop();
+
+                try {
+                    DataOutputStream dos = new DataOutputStream(entrySet.getKey().getOutputStream());
+                    dos.writeUTF("SC"); // Notify players about server closing
+                    entrySet.getKey().close();
+                } catch (IOException ex) {
+                    Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                RecvThreads.remove(entrySet.getKey());
+            }
+        }
+        
         stop();
         
         try {
             server_socket.close();
+            Log.AddToLog("Server was stopped!", Logs, MY_NAME);
         } catch (IOException ex) {
             Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
         }

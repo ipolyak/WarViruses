@@ -8,9 +8,11 @@ package server;
 import java.util.Map;
 import GameTools.GameRules;
 import GameTools.GameAreaParameters;
-import GameTools.GameAreaParameters;
 
 import LogTools.Log;
+import java.net.Socket;
+import java.util.Hashtable;
+import javax.swing.JTextArea;
 
 
 /**
@@ -18,11 +20,20 @@ import LogTools.Log;
  * @author Игорь
  */
 public class GameThread extends Thread{
-    //private Map<String, Map<String, int>> GameState;
+    private Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState = GameAreaParameters.GAME_STATE_INIT;
     private final String MY_NAME = "GameThread";
+    private Hashtable<String, Socket> Players;
+    
+    JTextArea Logs;
+    
+    public GameThread(JTextArea _Logs, Hashtable<String, Socket> _Players) {
+        Logs = _Logs;
+        Players = _Players;
+    }
+    
     @Override
     public void run() {
-        while (true) {
+        while (!GameRules.GameIsEnd()) {
 
             }
         }
