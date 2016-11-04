@@ -26,6 +26,11 @@ public class GameThread extends Thread{
     
     JTextArea Logs;
     
+    int num_toes = -1; // Current number of toes in game
+    int num_tics = -1; // -//- tics
+    
+    String winner = "";
+    
     public GameThread(JTextArea _Logs, Hashtable<String, Socket> _Players) {
         Logs = _Logs;
         Players = _Players;
@@ -33,8 +38,10 @@ public class GameThread extends Thread{
     
     @Override
     public void run() {
-        while (!GameRules.GameIsEnd()) {
+        while (!GameRules.GameIsEnd(num_tics, num_toes)) {
 
-            }
         }
+        
+        winner = GameRules.WhoWin(num_tics, num_toes);
+    }
 }

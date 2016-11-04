@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextArea;
 import LogTools.Log;
+import java.util.Hashtable;
 /**
  *
  * @author Игорь
@@ -31,10 +32,14 @@ public class RecvThread extends Thread{
     
     String group_name = "";
     
+    Hashtable<String, Socket> Players;
+    
     public RecvThread(Socket _cs,
-                      JTextArea _Logs) {
+                      JTextArea _Logs,
+                      Hashtable<String, Socket> _Players) {
         cs = _cs;
         Logs = _Logs;
+        Players = _Players;
 
         if (cs != null) {
             try {
@@ -81,10 +86,11 @@ public class RecvThread extends Thread{
     
     private void HandleServiceCommand(String command) {
         if(command.equals("CNG")) {
-            
+            Players.put(group_name, cs);
         } else if(command.equals("JG")) {
-            
+            Players.put(group_name, cs);
         } else if(command.equals("DG")) {
+            Players.remove(group_name);
             Disconnect();
         }
     }

@@ -78,7 +78,7 @@ public class ServerThread extends Thread {
                 Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, "ServerThread: Can't accept", ex);
             }
             
-            RecvThread RT = new RecvThread(socket_client, Logs);
+            RecvThread RT = new RecvThread(socket_client, Logs, Players);
             RT.start();
             
             RecvThreads.put(socket_client, RT);
