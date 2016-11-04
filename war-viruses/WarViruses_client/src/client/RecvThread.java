@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
-import client.Log;
+import LogTools.Log;
 
 /**
  *

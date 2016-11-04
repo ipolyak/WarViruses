@@ -5,7 +5,8 @@
  */
 package client;
 
-import client.Log;
+import LogTools.Log;
+import java.awt.Color;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Олег
+ * @author Игорь
  */
 public class ClientForm extends javax.swing.JFrame {
 
@@ -34,6 +35,8 @@ public class ClientForm extends javax.swing.JFrame {
     public ClientForm() {
         initComponents();
         jTable1.setShowGrid(true);
+        jTable1.setSelectionBackground(Color.WHITE);
+        jTable1.setBackground(Color.WHITE);
     }
 
     /**

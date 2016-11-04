@@ -6,10 +6,11 @@
 package server;
 
 import server.ServerThread;
+import LogTools.Log;
 
 /**
  *
- * @author Олег
+ * @author Игорь
  */
 public class ServerForm extends javax.swing.JFrame {
 

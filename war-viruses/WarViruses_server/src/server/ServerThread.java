@@ -20,7 +20,7 @@ import java.io.OutputStream;
 import java.util.Hashtable;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import server.Log;
+import LogTools.Log;
 import server.RecvThread;
 
 /**

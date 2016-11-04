@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server;
+package LogTools;
 import javax.swing.JTextArea;
 
 /**
@@ -11,7 +11,7 @@ import javax.swing.JTextArea;
  * @author Игорь
  */
 public class Log {
-    static void AddToLog(String info,
+    public static void AddToLog(String info,
                          JTextArea jTextArea,
                          String my_name) {
         

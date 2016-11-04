@@ -7,12 +7,13 @@ package client;
 
 import java.net.Socket;
 import javax.swing.JTextArea;
-import client.GameAreaParameters;
+import GameTools.GameAreaParameters;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import LogTools.Log;
 
 /**
  *

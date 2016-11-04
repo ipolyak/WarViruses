@@ -14,7 +14,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextArea;
-import server.Log;
+import LogTools.Log;
 /**
  *
  * @author Игорь
