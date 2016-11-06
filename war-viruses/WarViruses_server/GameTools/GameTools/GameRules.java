@@ -46,27 +46,45 @@ public class GameRules {
     }
     
     public static boolean IsCellAvailableForTics(String row, String column, Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState) {
-        return IsTickInSurround(row, column, GameState) ? true : false;
+        return IsTicInSurround(row, column, GameState) ? true : false;
     }
     
     public static boolean IsCellAvailableForToes(String row, String column, Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState) {
         return IsToeInSurround(row, column, GameState) ? true : false;
     }
     
-    public static boolean IsTickInSurround(String row, String column, Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState) {
+    public static boolean IsTicInSurround(String row, String column, Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState) {
         int row_int = Integer.parseInt(row);
         int column_int = LetterToNumber(column);
 
         if (!IsBorderInSurround(row, column)) {
             for (int i = row_int - 1; i < row_int + 1; i++) {
                 for (int j = column_int - 1; j < column_int + 1; j++) {
-                    String curr_row = Integer.toString(i);
-                    String curr_column = Integer.toString(j);
-                    if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TIC_HERE)) {
-                        return true;
+                    if (i != row_int || j != column_int) {
+                        String curr_row = Integer.toString(i);
+                        String curr_column = Integer.toString(j);
+                        if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TIC_HERE) &&
+                           (GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.CELL_EMPTY) || 
+                            GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.TOE_HERE))) {
+                            return true;
+                        }
                     }
                 }
             }
+
+            // Try to move over killed toes (to determine availability of cell)
+            for (int i = row_int - 1; i < row_int + 1; i++) {
+                for (int j = column_int - 1; j < column_int + 1; j++) {
+                    String curr_row = Integer.toString(i);
+                    String curr_column = Integer.toString(j);
+                    if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TOE_KILLED)
+                            && (GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.CELL_EMPTY)
+                            || GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.TOE_HERE))) {
+                        return IsTicInSurround(curr_row, curr_column, GameState);
+                    }
+                }
+            }
+
         } else {
             return true;
         }
@@ -90,13 +108,31 @@ public class GameRules {
         if (!IsBorderInSurround(row, column)) {
             for (int i = row_int - 1; i < row_int + 1; i++) {
                 for (int j = column_int - 1; j < column_int + 1; j++) {
-                    String curr_row = Integer.toString(i);
-                    String curr_column = Integer.toString(j);
-                    if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TOE_HERE)) {
-                        return true;
+                    if (i != row_int || j != column_int) {
+                        String curr_row = Integer.toString(i);
+                        String curr_column = Integer.toString(j);
+                        if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TOE_HERE) &&
+                           (GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.CELL_EMPTY) || 
+                            GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.TIC_HERE))) {
+                            return true;
+                        }
                     }
                 }
             }
+            
+            // Try to move over killed tics (to determine availability of cell)
+            for (int i = row_int - 1; i < row_int + 1; i++) {
+                for (int j = column_int - 1; j < column_int + 1; j++) {
+                    String curr_row = Integer.toString(i);
+                    String curr_column = Integer.toString(j);
+                    if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TIC_KILLED)
+                            && (GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.CELL_EMPTY)
+                            || GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.TIC_HERE))) {
+                        return IsToeInSurround(curr_row, curr_column, GameState);
+                    }
+                }
+            }
+
         } else {
             return true;
         }

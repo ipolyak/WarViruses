@@ -37,6 +37,7 @@ public class ClientForm extends javax.swing.JFrame {
         jTable1.setShowGrid(true);
         jTable1.setSelectionBackground(Color.WHITE);
         jTable1.setBackground(Color.WHITE);
+        jTable1.getColorModel().;
     }
 
     /**
@@ -62,16 +63,16 @@ public class ClientForm extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"10", null, null, null, null, null, null, null, null, null, null},
-                {"9", null, null, null, null, null, null, null, null, null, null},
-                {"8", null, null, null, null, null, null, null, null, null, null},
-                {"7", null, null, null, null, null, null, null, null, null, null},
-                {"6", null, null, null, null, null, null, null, null, null, null},
-                {"5", null, null, null, null, null, null, null, null, null, null},
-                {"4", null, null, null, null, null, null, null, null, null, null},
-                {"3", null, null, null, null, null, null, null, null, null, null},
+                {"1", null, null, null, null, null, null, null, null, null, null},
                 {"2", null, null, null, null, null, null, null, null, null, null},
-                {"1", null, null, null, null, null, null, null, null, null, null}
+                {"3", null, null, null, null, null, null, null, null, null, null},
+                {"4", null, null, null, null, null, null, null, null, null, null},
+                {"5", null, null, null, null, null, null, null, null, null, null},
+                {"6", null, null, null, null, null, null, null, null, null, null},
+                {"7", null, null, null, null, null, null, null, null, null, null},
+                {"8", null, null, null, null, null, null, null, null, null, null},
+                {"9", null, null, null, null, null, null, null, null, null, null},
+                {"10", null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
                 "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "k"
