@@ -7,16 +7,22 @@ package client;
 
 import LogTools.Log;
 import java.awt.Color;
+import java.awt.Component;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import static java.lang.Thread.sleep;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import GameTools.GameAreaParameters;
 
 /**
  *
  * @author Игорь
  */
+
 public class ClientForm extends javax.swing.JFrame {
 
     final String MY_NAME = "ClientForm";
@@ -32,12 +38,21 @@ public class ClientForm extends javax.swing.JFrame {
     RecvThread RT = null;
     String group_name = "";
     
+    
     public ClientForm() {
         initComponents();
         jTable1.setShowGrid(true);
-        jTable1.setSelectionBackground(Color.WHITE);
+        //jTable1.setSelectionBackground(Color);
         jTable1.setBackground(Color.WHITE);
-        jTable1.getColorModel().;
+        
+        CellPainter CP = new CellPainter();
+        Component c = CP.getTableCellRendererComponent(jTable1, null, false, false, 4, 4);
+
+      //  jTable1.setOpaque(true);
+        c.paint(jTable1.getGraphics());
+        //c.paintAll(jTable1.getGraphics());
+       // jTable1.setDefaultRenderer(Object.class, CP);
+        
     }
 
     /**
@@ -60,6 +75,11 @@ public class ClientForm extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -67,7 +87,7 @@ public class ClientForm extends javax.swing.JFrame {
                 {"2", null, null, null, null, null, null, null, null, null, null},
                 {"3", null, null, null, null, null, null, null, null, null, null},
                 {"4", null, null, null, null, null, null, null, null, null, null},
-                {"5", null, null, null, null, null, null, null, null, null, null},
+                {"5", null, null, null, "X", null, null, null, null, null, null},
                 {"6", null, null, null, null, null, null, null, null, null, null},
                 {"7", null, null, null, null, null, null, null, null, null, null},
                 {"8", null, null, null, null, null, null, null, null, null, null},
@@ -79,7 +99,13 @@ public class ClientForm extends javax.swing.JFrame {
             }
         ));
         jTable1.setColumnSelectionAllowed(true);
+        jTable1.setEnabled(false);
         jTable1.setRowHeight(34);
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ClickOnCellMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
         jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
@@ -247,6 +273,39 @@ public class ClientForm extends javax.swing.JFrame {
             Log.AddToLog("Game already running!", jTextArea1, MY_NAME);
         }
     }//GEN-LAST:event_CreateNewGameActionPerformed
+
+    private void ClickOnCellMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClickOnCellMouseClicked
+        if (IsConnected) {
+            int row, col;
+            row = jTable1.rowAtPoint(evt.getPoint()) + 1;
+            col = jTable1.columnAtPoint(evt.getPoint());
+            
+            String col_string = GameAreaParameters.Column[col - 1];
+            String command = Integer.toString(row) + ":" + col_string;
+            Sender SR = new Sender(jTextArea1, cs);
+            
+            if(SR.SendCommand(command) == SEND_FAILED ) {
+                Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
+            }     
+        } else {
+            Log.AddToLog("Please, create or join to existing game!", jTextArea1, MY_NAME);
+        }
+    }//GEN-LAST:event_ClickOnCellMouseClicked
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if (IsConnected) {
+           // if (RT != null) {
+               // RT.stop();
+
+                Sender SR = new Sender(jTextArea1, cs);
+                if (SR.SendCommand("DG") == SEND_FAILED) {
+                    Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
+                }
+                
+                IsConnected = false;
+            //}
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments

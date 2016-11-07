@@ -57,7 +57,7 @@ public class RecvThread extends Thread {
         while (IsConnect) {
             
 
-               /* DefaultTableModel model = (DefaultTableModel) table.getModel();
+                /* DefaultTableModel model = (DefaultTableModel) table.getModel();
                 model.setValueAt(name, table_size, 0);
                 model.setValueAt(path_to_file, table_size, 1);
                 table.setModel(model);*/

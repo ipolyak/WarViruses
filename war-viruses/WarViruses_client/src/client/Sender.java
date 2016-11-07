@@ -94,21 +94,24 @@ public class Sender {
         }
     }
 
-    private String ParseCommand(String command) {
+    private String ParseServiceCommand(String command) {
         if (command.equals("CNG") ||
             command.equals("JG")  ||
             command.equals("DG")) {
             return SERVICE_INFO;
         } else {
-            return ParseGameCommand(command);
+            return "";
         }
     }
     
     private String ParseGameCommand(String command) {
+        System.out.println(command);
         String first_part = getSubstringOfGameCommand(command, ":", 0);
         String second_part = getSubstringOfGameCommand(command, ":", 1);
         boolean first_part_ok = false;
         boolean second_part_ok = false;
+        System.out.println(first_part);
+        System.out.println(second_part);
         
         int num_or_rows = GameAreaParameters.NUM_OF_ROWS;
         int num_or_columns = GameAreaParameters.NUM_OF_COLUMNS;
@@ -150,15 +153,15 @@ public class Sender {
     }
 
     public int SendCommand(String command) {
-        if (ParseCommand(command).equals(SERVICE_INFO)) {
+        if (ParseServiceCommand(command).equals(SERVICE_INFO)) {
             SendServiceCommand(command);
-        } else if(ParseCommand(command).equals(GAME_INFO)) {
+        } else if (ParseGameCommand(command).equals(GAME_INFO)) {
             SendGameCommand(command);
         } else {
             return -1;
         }
-        
+
         return 0;
     }
-            
+
 }
