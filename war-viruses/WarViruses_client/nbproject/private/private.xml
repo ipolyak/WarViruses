@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/git-projects/WarViruses/war-viruses/WarViruses_client/src/client/RecvThread.java</file>
             <file>file:/D:/git-projects/WarViruses/war-viruses/WarViruses_client/src/client/ClientForm.java</file>
             <file>file:/D:/git-projects/WarViruses/war-viruses/WarViruses_client/src/client/Sender.java</file>
-            <file>file:/D:/git-projects/WarViruses/war-viruses/WarViruses_client/src/client/TableGame.java</file>
+            <file>file:/D:/git-projects/WarViruses/war-viruses/WarViruses_client/GameTools/GameTools/GameAreaParameters.java</file>
+            <file>file:/D:/git-projects/WarViruses/war-viruses/WarViruses_client/src/client/CellPainter.java</file>
         </group>
     </open-files>
 </project-private>

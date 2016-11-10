@@ -55,6 +55,22 @@ public class Sender {
         return 0;
     }
     
+    /*
+      Messages
+
+      1. CA - Cell Available
+      2. CN - Cell Not Available
+      3. WIN - You win
+      4. LOSE - You lose
+    
+          For tics:
+      5. KTO - Kill Toe
+          For toes:
+      6. KTI - Kill Tic
+    
+      And messages of this type <row:col> - enemy moves
+      
+    */
     public void SendCommandToTics(String command) {
     }
     

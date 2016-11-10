@@ -24,6 +24,13 @@ public class GameAreaParameters {
     public static enum CELL_STATE {CELL_EMPTY, TIC_HERE, TOE_HERE, TIC_KILLED, TOE_KILLED};
         
     public static final Map<String, Map<String, CELL_STATE>> GAME_STATE_INIT;
+    /*
+    0 - cell empty
+    1 - tic here
+    2 - toe here
+    3 - tic_killed
+    4 - toe_killed
+    */
     
     static { // Initialization of GAME_STATE_INIT constant
         Map<String, Map<String, CELL_STATE>> duplicate_GAME_STATE_INIT;

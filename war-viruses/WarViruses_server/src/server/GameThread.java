@@ -22,6 +22,8 @@ import javax.swing.JTextArea;
 public class GameThread extends Thread{
     private Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState = GameAreaParameters.GAME_STATE_INIT;
     private final String MY_NAME = "GameThread";
+    private final String FIRST_MOVE = "Tics";
+    
     private Hashtable<String, Socket> Players;
     
     JTextArea Logs;
@@ -36,8 +38,14 @@ public class GameThread extends Thread{
         Players = _Players;
     }
     
+    public void InitGame() {
+        
+    }
+    
     @Override
     public void run() {
+        InitGame();
+        
         while (!GameRules.GameIsEnd(num_tics, num_toes)) {
 
         }

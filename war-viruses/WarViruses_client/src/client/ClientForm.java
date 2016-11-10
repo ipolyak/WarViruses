@@ -44,12 +44,16 @@ public class ClientForm extends javax.swing.JFrame {
         jTable1.setShowGrid(true);
         //jTable1.setSelectionBackground(Color);
         jTable1.setBackground(Color.WHITE);
-        
-        CellPainter CP = new CellPainter();
-        Component c = CP.getTableCellRendererComponent(jTable1, null, false, false, 4, 4);
+        jTable1.getGraphics().setColor(Color.red);
+        jTable1.getGraphics().fillRect(jTable1.getCellRect(80, 5, true).x,
+                                       jTable1.getCellRect(5, 5, true).y,
+                                       jTable1.getCellRect(5, 5, true).width,
+                                       jTable1.getCellRect(5, 5, true).height);
+        //CellPainter CP = new CellPainter();
+        //Component c = CP.getTableCellRendererComponent(jTable1, null, false, false, 4, 4);
 
       //  jTable1.setOpaque(true);
-        c.paint(jTable1.getGraphics());
+        //c.paint(jTable1.getGraphics());
         //c.paintAll(jTable1.getGraphics());
        // jTable1.setDefaultRenderer(Object.class, CP);
         
