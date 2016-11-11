@@ -21,6 +21,9 @@ public class GameAreaParameters {
     public final static int NUM_OF_COLUMNS = 10;
     public final static int NUM_OF_ROWS = 10;
     
+    public final static String TICS = "Tic";
+    public final static String TOES = "Toe";
+    
     public static enum CELL_STATE {CELL_EMPTY, TIC_HERE, TOE_HERE, TIC_KILLED, TOE_KILLED};
         
     public static final Map<String, Map<String, CELL_STATE>> GAME_STATE_INIT;

@@ -29,6 +29,7 @@ public class RecvThread extends Thread{
     
     JTextArea Logs;
     boolean IsClientDisconnect = false;
+    ClientGameCommand CGC;
     
     String group_name = "";
     
@@ -36,10 +37,12 @@ public class RecvThread extends Thread{
     
     public RecvThread(Socket _cs,
                       JTextArea _Logs,
-                      Hashtable<String, Socket> _Players) {
+                      Hashtable<String, Socket> _Players,
+                      ClientGameCommand _CGC) {
         cs = _cs;
         Logs = _Logs;
         Players = _Players;
+        CGC = _CGC;
 
         if (cs != null) {
             try {
@@ -68,6 +71,8 @@ public class RecvThread extends Thread{
         
         String log_info = group_name.concat(" exited from game!");
         Log.AddToLog(log_info, Logs, MY_NAME);
+        
+        // Отправить противнику сообщение о победе
     }
     
     private void WrongCommand() {
@@ -94,11 +99,13 @@ public class RecvThread extends Thread{
             Disconnect();
         }
     }
-    
+
     private void HandleGameCommand(String command) {
-        
+        CGC.command = command;
+        CGC.group_name = group_name;
+        CGC.mutex.notify();
     }
-    
+
         
     private void HandlerOfClient() {
         DataInputStream sdis = new DataInputStream(sis);

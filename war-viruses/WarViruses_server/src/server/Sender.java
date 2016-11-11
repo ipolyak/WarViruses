@@ -57,18 +57,27 @@ public class Sender {
     
     /*
       Messages
+     Service info:
+     1. EM - enemy info
+     2. YT - your turn (if your turn then you can do the move)
+     3. ET - enemy turn. Wait... (if enemy turn then you can't do the move. Wait msgs "EM")
 
-      1. CA - Cell Available
-      2. CN - Cell Not Available
-      3. WIN - You win
-      4. LOSE - You lose
+     Game info:
+     1. CA - Cell Available
+     2. CN - Cell Not Available
+     3. WIN - You win
+     4. LOSE - You lose
+     5. DRAW 
     
-          For tics:
-      5. KTO - Kill Toe
-          For toes:
-      6. KTI - Kill Tic
+     For tics:
+     6. KTO - Kill Toe (instead CA)
     
-      And messages of this type <row:col> - enemy moves
+     For toes:
+     7. KTI - Kill Tic (instead CA)
+    
+     And messages of this type <row:col> - enemy moves (if service info == EM)
+     1. <Count_steps>
+     2. Steps (<row:col>)
       
     */
     public void SendCommandToTics(String command) {

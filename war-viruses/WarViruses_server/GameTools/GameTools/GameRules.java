@@ -18,6 +18,9 @@ public class GameRules {
     private static final String TICS = "Tic";
     private static final String TOES = "Toe";
     
+    public static int num_turn = 0;
+    private static String group_active = "Tic";
+    
     public static boolean GameIsEnd(int num_tics, int num_toes) {
         if(num_tics == 0 || num_toes == 0)
             return true;
@@ -149,6 +152,43 @@ public class GameRules {
             return false;
         }
         
+        return true;
+    }
+    
+    public static String WhoseTurn() {
+        if(num_turn < 3  && AvailableCellExist(group_active)) {
+            return group_active;
+        } else if(AvailableCellExist(InvertGroup(group_active))){
+            num_turn = 0;
+            group_active = InvertGroup(group_active);
+            return group_active;
+        } else {
+            return "DRAW";
+        }
+    }
+    
+    public static GameAreaParameters.CELL_STATE GetValue(String row, String col,
+                                                         Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState) {
+        return GameState.get(row).get(col);
+    }
+    
+    public static void KillTic(String row, String col, Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState) {
+        GameState.get(row).replace(col, GameAreaParameters.CELL_STATE.TIC_KILLED);
+    }
+    
+    public static void KillToe(String row, String col, Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState) {
+        GameState.get(row).replace(col, GameAreaParameters.CELL_STATE.TOE_KILLED);
+    }
+    
+    private static String InvertGroup(String _group_name) {
+        if(_group_name.equals(TICS)) {
+            return TOES;
+        } else {
+            return TICS;
+        }
+    }
+    
+    private static boolean AvailableCellExist(String _group_name) {
         return true;
     }
 }

@@ -45,7 +45,7 @@ public class ClientForm extends javax.swing.JFrame {
         //jTable1.setSelectionBackground(Color);
         jTable1.setBackground(Color.WHITE);
         jTable1.getGraphics().setColor(Color.red);
-        jTable1.getGraphics().fillRect(jTable1.getCellRect(80, 5, true).x,
+        jTable1.getGraphics().fillRect(jTable1.getCellRect(5, 5, true).x,
                                        jTable1.getCellRect(5, 5, true).y,
                                        jTable1.getCellRect(5, 5, true).width,
                                        jTable1.getCellRect(5, 5, true).height);
