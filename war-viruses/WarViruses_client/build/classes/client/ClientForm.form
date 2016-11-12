@@ -119,7 +119,18 @@
                   <Data value="9"/>
                   <Data value="10"/>
                 </Column>
-                <Column editable="true" title="a" type="java.lang.Object"/>
+                <Column editable="true" title="a" type="java.lang.Object">
+                  <Data value="X"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                </Column>
                 <Column editable="true" title="b" type="java.lang.Object"/>
                 <Column editable="true" title="c" type="java.lang.Object"/>
                 <Column editable="true" title="d" type="java.lang.Object">
@@ -127,7 +138,7 @@
                   <Data value="null"/>
                   <Data value="null"/>
                   <Data value="null"/>
-                  <Data value="X"/>
+                  <Data value=""/>
                   <Data value="null"/>
                   <Data value="null"/>
                   <Data value="null"/>
@@ -139,7 +150,18 @@
                 <Column editable="true" title="g" type="java.lang.Object"/>
                 <Column editable="true" title="h" type="java.lang.Object"/>
                 <Column editable="true" title="i" type="java.lang.Object"/>
-                <Column editable="true" title="k" type="java.lang.Object"/>
+                <Column editable="true" title="k" type="java.lang.Object">
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="null"/>
+                  <Data value="O"/>
+                </Column>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">

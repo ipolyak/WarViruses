@@ -5,6 +5,7 @@
  */
 package client;
 
+import GameTools.GameAreaParameters;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,14 +35,20 @@ public class RecvThread extends Thread {
     InputStream cis = null;
     boolean IsConnect = true;
     JTable table;
+    TurnPermit TP;
+    String group_name;
 
     public RecvThread(Socket _cs,
                       JTextArea _Logs,
-                      JTable _table) {
+                      JTable _table,
+                      TurnPermit _TP,
+                      String _group_name) {
         
         cs = _cs;
         Logs = _Logs;
         table = _table;
+        TP = _TP;
+        group_name = _group_name;
         
         if (cs != null) {
             try {
@@ -51,19 +58,110 @@ public class RecvThread extends Thread {
             }
         }
     }
+    
+    private String getSubstringOfGameCommand(String command, String delimeter, int action) {
+        // если в строке command есть delimeter и он не является первым символом в строке command и action == 1 (берем то, что после delimeter стоит)
+        if (command.lastIndexOf(delimeter) != -1 && command.lastIndexOf(delimeter) != 0 && action == 1) // то вырезаем все знаки после delimeter в command, то есть <first_part><delimeter><second_part> -> <second_part>
+        {
+            return command.substring(command.lastIndexOf(delimeter) + 1);
+        } // -//- action == 0 (берем то, что перед delimeter стоит)
+        else if (command.lastIndexOf(delimeter) != -1 && command.lastIndexOf(delimeter) != 0 && action == 0) { // то вырезаем все знаки после delimeter в command, то есть <first_part><delimeter><second_part> -> <first_part>
+            return command.substring(0, command.lastIndexOf(delimeter));
+        }
+
+        return ""; // Bad case
+    }
+    
+    public static int LetterToNumber(String column) {
+        for(int i = 0; i < GameAreaParameters.NUM_OF_COLUMNS; i++)
+            if(GameAreaParameters.Column[i].equals(column)) {
+                return i + 1;
+            }
+        
+        return 0;
+    }
+    
+    private void HandleCommandServer() {
+        DataInputStream cdis = new DataInputStream(cis);
+
+        String command = "";
+        String info_turn;
+
+        try {
+            command = cdis.readUTF();
+
+            if (command.equals("CA") || command.equals("KTI") || command.equals("KTO")) {
+                String my_command_coord = cdis.readUTF();
+                String row = getSubstringOfGameCommand(my_command_coord, ":", 0);
+                String col = getSubstringOfGameCommand(my_command_coord, ":", 1);
+
+                info_turn = cdis.readUTF();
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                if (command.equals("CA")) {
+                    if (group_name.equals("Tic")) {
+                        model.setValueAt("X", Integer.valueOf(row) - 1, LetterToNumber(col));
+                    } else {
+                        model.setValueAt("O", Integer.valueOf(row) - 1, LetterToNumber(col));
+                    }
+                } else if (command.equals("KTI")) {
+                    model.setValueAt("KX", Integer.valueOf(row) - 1, LetterToNumber(col));
+                } else {
+                    model.setValueAt("KO", Integer.valueOf(row) - 1, LetterToNumber(col));
+                }
+                table.setModel(model);
+                if (info_turn.equals("YT")) {
+                    TP.MoveIsPermit = true;
+                } else if (info_turn.equals("ET")) {
+                    TP.MoveIsPermit = false;
+                }
+            } else if (command.equals("CN")) {
+                Log.AddToLog("Cell is not available!", Logs, MY_NAME);
+            } else if (command.equals("EM")) { // Receive enemy info
+                int num_commands = Integer.valueOf(cdis.readUTF());
+
+                for (int i = 0; i < num_commands; i++) {
+                    String comm = cdis.readUTF();
+                    String status = cdis.readUTF();
+                    
+                    String row = getSubstringOfGameCommand(comm, ":", 0);
+                    String col = getSubstringOfGameCommand(comm, ":", 1);
+                    
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    model.setValueAt(status, Integer.valueOf(row) - 1, LetterToNumber(col) - 1);
+                }
+            } else if (command.equals("WIN")) {
+                Log.AddToLog("You win!", Logs, MY_NAME);
+                IsConnect = false;
+            } else if (command.equals("LOSE")) {
+                Log.AddToLog("You lose!", Logs, MY_NAME);
+                IsConnect = false;
+            } else if (command.equals("DRAW")) {
+                Log.AddToLog("Draw!", Logs, MY_NAME);
+                IsConnect = false;
+            } else if (command.equals("SC")) {
+                Log.AddToLog("Disconnect from game! Reason: server off", Logs, MY_NAME);
+                IsConnect = false; // как то нужно сообщить об этом классу выше
+            } else if (command.equals("WC")) {
+                Log.AddToLog("Wrong command!", Logs, MY_NAME);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(RecvThread.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     @Override
     public void run() {
-        while (IsConnect) {
+        Log.AddToLog("Start!", Logs, MY_NAME);
             
+        while (IsConnect) {
+            HandleCommandServer();
 
-                /* DefaultTableModel model = (DefaultTableModel) table.getModel();
+            /* DefaultTableModel model = (DefaultTableModel) table.getModel();
                 model.setValueAt(name, table_size, 0);
                 model.setValueAt(path_to_file, table_size, 1);
                 table.setModel(model);*/
-            }
-           
         }
-        
-                    
+
     }
+
+}

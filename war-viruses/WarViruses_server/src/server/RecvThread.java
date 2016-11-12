@@ -103,7 +103,9 @@ public class RecvThread extends Thread{
     private void HandleGameCommand(String command) {
         CGC.command = command;
         CGC.group_name = group_name;
+         synchronized (CGC.mutex) {
         CGC.mutex.notify();
+         }
     }
 
         
@@ -128,7 +130,6 @@ public class RecvThread extends Thread{
         } catch (IOException ex) {
             Logger.getLogger(RecvThread.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
     
     @Override

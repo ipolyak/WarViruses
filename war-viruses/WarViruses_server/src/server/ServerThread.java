@@ -42,8 +42,8 @@ public class ServerThread extends Thread {
     boolean IsStopped = true;
     Hashtable<String, Socket> Players = new Hashtable<String, Socket>();
     Hashtable<Socket, RecvThread> RecvThreads = new Hashtable<Socket, RecvThread>();
-    ClientGameCommand CGC_tic;
-    ClientGameCommand CGC_toe;
+    ClientGameCommand CGC_tic = new ClientGameCommand();
+    ClientGameCommand CGC_toe = new ClientGameCommand();
 
     GameThread GT;
 

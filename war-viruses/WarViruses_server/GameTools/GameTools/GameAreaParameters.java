@@ -48,6 +48,10 @@ public class GameAreaParameters {
             duplicate_GAME_STATE_INIT.put(Row[i], itemOfGameStateInit);
         }
         
+        // Init state:
+        duplicate_GAME_STATE_INIT.get("1").replace("a", CELL_STATE.TIC_HERE);
+        duplicate_GAME_STATE_INIT.get("10").replace("k", CELL_STATE.TOE_HERE);
+        
         GAME_STATE_INIT = Collections.unmodifiableMap(duplicate_GAME_STATE_INIT);
     }
 }

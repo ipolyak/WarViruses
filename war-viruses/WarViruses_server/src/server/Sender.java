@@ -6,6 +6,7 @@
 package server;
 
 import LogTools.Log;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -79,10 +80,31 @@ public class Sender {
      1. <Count_steps>
      2. Steps (<row:col>)
       
-    */
+     */
     public void SendCommandToTics(String command) {
+        if (cs != null) {
+            DataOutputStream cdos = new DataOutputStream(cos);
+            try {
+                cdos.writeUTF(command);
+                String info = "Game command " + command + " send to tics";
+                Log.AddToLog(info, Logs, MY_NAME);
+            } catch (IOException ex) {
+                Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
-    
+
     public void SendCommandToToes(String command) {
+        if (cs != null) {
+            DataOutputStream cdos = new DataOutputStream(cos);
+            try {
+                cdos.writeUTF(command);
+                String info = "Game command " + command + " send to toes";
+                Log.AddToLog(info, Logs, MY_NAME);
+            } catch (IOException ex) {
+                Logger.getLogger(Sender.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
     }
 }

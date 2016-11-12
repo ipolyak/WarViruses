@@ -38,6 +38,8 @@ public class ClientForm extends javax.swing.JFrame {
     RecvThread RT = null;
     String group_name = "";
     
+    TurnPermit TP = new TurnPermit();
+    
     
     public ClientForm() {
         initComponents();
@@ -87,16 +89,16 @@ public class ClientForm extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"1", null, null, null, null, null, null, null, null, null, null},
+                {"1", "X", null, null, null, null, null, null, null, null, null},
                 {"2", null, null, null, null, null, null, null, null, null, null},
                 {"3", null, null, null, null, null, null, null, null, null, null},
                 {"4", null, null, null, null, null, null, null, null, null, null},
-                {"5", null, null, null, "X", null, null, null, null, null, null},
+                {"5", null, null, null, "", null, null, null, null, null, null},
                 {"6", null, null, null, null, null, null, null, null, null, null},
                 {"7", null, null, null, null, null, null, null, null, null, null},
                 {"8", null, null, null, null, null, null, null, null, null, null},
                 {"9", null, null, null, null, null, null, null, null, null, null},
-                {"10", null, null, null, null, null, null, null, null, null, null}
+                {"10", null, null, null, null, null, null, null, null, null, "O"}
             },
             new String [] {
                 "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "k"
@@ -238,6 +240,7 @@ public class ClientForm extends javax.swing.JFrame {
     private void JoinToGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JoinToGameActionPerformed
         if(!IsConnected) {
             group_name = "Toe";
+            TP.MoveIsPermit = false;
             ConnectToServer();
             
             Sender SR = new Sender(jTextArea1, cs);  
@@ -246,7 +249,7 @@ public class ClientForm extends javax.swing.JFrame {
             if(SR.SendCommand("JG") == SEND_FAILED) {
                 Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
             } else {
-                RT = new RecvThread(cs, jTextArea1, jTable1);
+                RT = new RecvThread(cs, jTextArea1, jTable1, TP, "Toe");
                 RT.start();
             }
         } else {
@@ -263,34 +266,43 @@ public class ClientForm extends javax.swing.JFrame {
     }//GEN-LAST:event_ExitFromGameActionPerformed
 
     private void CreateNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateNewGameActionPerformed
-        if(!IsConnected) {
+        if (!IsConnected) {
+            TP.MoveIsPermit = true;
+
             group_name = "Tic";
             ConnectToServer();
-            
+
             Sender SR = new Sender(jTextArea1, cs);
             SR.SetGroupName(group_name);
-            
-            if(SR.SendCommand("CNG") == SEND_FAILED) {
+
+            if (SR.SendCommand("CNG") == SEND_FAILED) {
                 Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
+            } else {
+                RT = new RecvThread(cs, jTextArea1, jTable1, TP, "Tic");
+                RT.start();
             }
         } else {
             Log.AddToLog("Game already running!", jTextArea1, MY_NAME);
         }
     }//GEN-LAST:event_CreateNewGameActionPerformed
-
+    
     private void ClickOnCellMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClickOnCellMouseClicked
         if (IsConnected) {
-            int row, col;
-            row = jTable1.rowAtPoint(evt.getPoint()) + 1;
-            col = jTable1.columnAtPoint(evt.getPoint());
-            
-            String col_string = GameAreaParameters.Column[col - 1];
-            String command = Integer.toString(row) + ":" + col_string;
-            Sender SR = new Sender(jTextArea1, cs);
-            
-            if(SR.SendCommand(command) == SEND_FAILED ) {
-                Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
-            }     
+            if (TP.MoveIsPermit) {
+                int row, col;
+                row = jTable1.rowAtPoint(evt.getPoint()) + 1;
+                col = jTable1.columnAtPoint(evt.getPoint());
+
+                String col_string = GameAreaParameters.Column[col - 1];
+                String command = Integer.toString(row) + ":" + col_string;
+                Sender SR = new Sender(jTextArea1, cs);
+
+                if (SR.SendCommand(command) == SEND_FAILED) {
+                    Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
+                }
+            } else {
+                Log.AddToLog("Please, wait your opponent!", jTextArea1, MY_NAME);
+            }
         } else {
             Log.AddToLog("Please, create or join to existing game!", jTextArea1, MY_NAME);
         }
