@@ -61,11 +61,13 @@ public class GameRules {
         int column_int = LetterToNumber(column);
 
         if (!IsBorderInSurround(row, column)) {
-            for (int i = row_int - 1; i < row_int + 1; i++) {
-                for (int j = column_int - 1; j < column_int + 1; j++) {
+            for (int i = row_int - 1; i <= row_int + 1; i++) {
+                for (int j = column_int - 1; j <= column_int + 1; j++) {
                     if (i != row_int || j != column_int) {
                         String curr_row = Integer.toString(i);
-                        String curr_column = Integer.toString(j);
+                        String curr_column = NumberToLetter(j);
+                                            System.out.println(curr_row);
+                    System.out.println(curr_column);
                         if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TIC_HERE) &&
                            (GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.CELL_EMPTY) || 
                             GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.TOE_HERE))) {
@@ -76,10 +78,11 @@ public class GameRules {
             }
 
             // Try to move over killed toes (to determine availability of cell)
-            for (int i = row_int - 1; i < row_int + 1; i++) {
-                for (int j = column_int - 1; j < column_int + 1; j++) {
+            for (int i = row_int - 1; i <= row_int + 1; i++) {
+                for (int j = column_int - 1; j <= column_int + 1; j++) {
                     String curr_row = Integer.toString(i);
-                    String curr_column = Integer.toString(j);
+                    String curr_column = NumberToLetter(j);
+
                     if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TOE_KILLED)
                             && (GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.CELL_EMPTY)
                             || GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.TOE_HERE))) {
@@ -98,10 +101,14 @@ public class GameRules {
     public static int LetterToNumber(String column) {
         for(int i = 0; i < GameAreaParameters.NUM_OF_COLUMNS; i++)
             if(GameAreaParameters.Column[i].equals(column)) {
-                return i + 1;
+                return i;
             }
         
         return 0;
+    }
+    
+    public static String NumberToLetter(int num) {
+        return GameAreaParameters.Column[num];
     }
     
     public static boolean IsToeInSurround(String row, String column, Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState) {
@@ -109,11 +116,11 @@ public class GameRules {
         int column_int = LetterToNumber(column);
         
         if (!IsBorderInSurround(row, column)) {
-            for (int i = row_int - 1; i < row_int + 1; i++) {
-                for (int j = column_int - 1; j < column_int + 1; j++) {
+            for (int i = row_int - 1; i <= row_int + 1; i++) {
+                for (int j = column_int - 1; j <= column_int + 1; j++) {
                     if (i != row_int || j != column_int) {
                         String curr_row = Integer.toString(i);
-                        String curr_column = Integer.toString(j);
+                        String curr_column = NumberToLetter(j);
                         if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TOE_HERE) &&
                            (GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.CELL_EMPTY) || 
                             GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.TIC_HERE))) {
@@ -124,10 +131,10 @@ public class GameRules {
             }
             
             // Try to move over killed tics (to determine availability of cell)
-            for (int i = row_int - 1; i < row_int + 1; i++) {
-                for (int j = column_int - 1; j < column_int + 1; j++) {
+            for (int i = row_int - 1; i <= row_int + 1; i++) {
+                for (int j = column_int - 1; j <= column_int + 1; j++) {
                     String curr_row = Integer.toString(i);
-                    String curr_column = Integer.toString(j);
+                    String curr_column = NumberToLetter(j);
                     if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TIC_KILLED)
                             && (GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.CELL_EMPTY)
                             || GameState.get(row).get(column).equals(GameAreaParameters.CELL_STATE.TIC_HERE))) {
@@ -178,6 +185,14 @@ public class GameRules {
     
     public static void KillToe(String row, String col, Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState) {
         GameState.get(row).replace(col, GameAreaParameters.CELL_STATE.TOE_KILLED);
+    }
+    
+    public static void OccupieCell(String row, String col, Map<String, Map<String, GameAreaParameters.CELL_STATE>> GameState, String group_name) {
+        if (group_name.equals("Tic")) {
+            GameState.get(row).replace(col, GameAreaParameters.CELL_STATE.TIC_HERE);
+        } else {
+            GameState.get(row).replace(col, GameAreaParameters.CELL_STATE.TOE_HERE);
+        }
     }
     
     private static String InvertGroup(String _group_name) {

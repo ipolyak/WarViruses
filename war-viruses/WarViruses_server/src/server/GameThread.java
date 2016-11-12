@@ -88,7 +88,8 @@ public class GameThread extends Thread {
                 } else {
                     num_tics++;
                 }
-
+                
+                GameRules.OccupieCell(row, col, GameState, "Tic");
                 ST.SendCommand("CA");
                 ST.SendCommand(CGC_tic.command);
                 MyMoves[count_turn_tic - 1].status = "X";
@@ -130,6 +131,7 @@ public class GameThread extends Thread {
                     num_toes++;
                 }
 
+                GameRules.OccupieCell(row, col, GameState, "Toe");
                 ST.SendCommand("CA");
                 ST.SendCommand(CGC_toe.command);
                 MyMoves[count_turn_toe - 1].status = "O";
