@@ -90,6 +90,12 @@ public class GameThread extends Thread {
 
                 ST.SendCommand("KTO");
             }
+            
+            if(count_turn_tic < 3) {
+                ST.SendCommand("YT");
+            } else {
+                ST.SendCommand("ET");
+            }
         } else {
             Sender ST = new Sender(Logs, Players.get(CGC_tic.group_name), CGC_tic.group_name);
 
@@ -120,6 +126,12 @@ public class GameThread extends Thread {
                 num_tics--;
 
                 ST.SendCommand("KTI");
+            }
+            
+            if(count_turn_toe < 3) {
+                ST.SendCommand("YT");
+            } else {
+                ST.SendCommand("ET");
             }
         } else {
             Sender ST = new Sender(Logs, Players.get(CGC_toe.group_name), CGC_toe.group_name);
@@ -156,7 +168,7 @@ public class GameThread extends Thread {
         if (enemy.equals("Tic")) {
             if (count_turn_tic > 0) {
                 Sender ST = new Sender(Logs, Players.get(CGC_toe.group_name), CGC_toe.group_name);
-                ST.SendCommand("ET");
+                ST.SendCommand("EM");
                 ST.SendCommand(Integer.toString(count_turn_toe));
                 for (int i = 0; i < count_turn_tic; i++) {
                     ST.SendCommand(MyMoves[i].command);
