@@ -37,6 +37,11 @@ public class GameThread extends Thread {
 
     ClientGameCommand CGC_tic;
     ClientGameCommand CGC_toe;
+    
+    ClientGameCommand MyMoves[] = new ClientGameCommand[3];
+    
+    int count_turn_tic = 0;
+    int count_turn_toe = 0;
 
     public GameThread(JTextArea _Logs,
             Hashtable<String, Socket> _Players,
@@ -68,7 +73,9 @@ public class GameThread extends Thread {
         if (GameRules.IsCellAvailable(CGC_tic.group_name, row, col, GameState)) {
             GameAreaParameters.CELL_STATE state = GameRules.GetValue(row, col, GameState);
             Sender ST = new Sender(Logs, Players.get(CGC_tic.group_name), CGC_tic.group_name);
-
+            MyMoves[count_turn_tic].command = CGC_tic.command;
+            count_turn_tic++;
+            
             if (state.equals(GameAreaParameters.CELL_STATE.CELL_EMPTY)) {
                 if (num_tics == -1) {
                     num_tics += 2;
@@ -97,7 +104,9 @@ public class GameThread extends Thread {
         if (GameRules.IsCellAvailable(CGC_toe.group_name, row, col, GameState)) {
             GameAreaParameters.CELL_STATE state = GameRules.GetValue(row, col, GameState);
             Sender ST = new Sender(Logs, Players.get(CGC_toe.group_name), CGC_toe.group_name);
-
+            MyMoves[count_turn_toe].command = CGC_toe.command;
+            count_turn_toe++;
+            
             if (state.equals(GameAreaParameters.CELL_STATE.CELL_EMPTY)) {
                 if (num_toes == -1) {
                     num_toes += 2;
@@ -143,10 +152,35 @@ public class GameThread extends Thread {
         }
     }
 
+    private void SendEnemyMoves(String enemy) {
+        if (enemy.equals("Tic")) {
+            if (count_turn_tic > 0) {
+                Sender ST = new Sender(Logs, Players.get(CGC_toe.group_name), CGC_toe.group_name);
+                ST.SendCommand("ET");
+                ST.SendCommand(Integer.toString(count_turn_toe));
+                for (int i = 0; i < count_turn_tic; i++) {
+                    ST.SendCommand(MyMoves[i].command);
+                }
+            }
+        } else 
+            if (count_turn_toe > 0) {
+                Sender ST = new Sender(Logs, Players.get(CGC_tic.group_name), CGC_tic.group_name);
+                ST.SendCommand("ET");
+                ST.SendCommand(Integer.toString(count_turn_tic));
+
+                for (int i = 0; i < count_turn_toe; i++) {
+                    ST.SendCommand(MyMoves[i].command);
+            }
+        }
+    }
+
     @Override
     public void run() {
         while (!GameRules.GameIsEnd(num_tics, num_toes)) {
             if (GameRules.WhoseTurn().equals("Tic")) {
+                SendEnemyMoves("Toe"); // Send to tic info about toe moves
+                count_turn_toe = 0;
+                
                 synchronized (CGC_tic.mutex) {
                     try {
                         CGC_tic.mutex.wait();
@@ -158,6 +192,9 @@ public class GameThread extends Thread {
                 GameRules.num_turn++;
                 HandleTicMoves();
             } else if (GameRules.WhoseTurn().equals("Toe")) {
+                SendEnemyMoves("Tic"); // Send to toe info about tic moves
+                count_turn_tic = 0;
+                
                 synchronized (CGC_toe.mutex) {
                     try {
                         CGC_toe.mutex.wait();

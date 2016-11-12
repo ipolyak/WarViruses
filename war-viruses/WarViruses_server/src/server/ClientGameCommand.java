@@ -16,6 +16,7 @@ public class ClientGameCommand {
     public String command;
     public Object mutex;
     public String group_name;
+    public int num_moves = 0;
     
     public ClientGameCommand(String _command, String _group_name) {
         command = _command;
