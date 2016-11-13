@@ -35,19 +35,16 @@ public class RecvThread extends Thread {
     InputStream cis = null;
     boolean IsConnect = true;
     JTable table;
-    TurnPermit TP;
     String group_name;
 
     public RecvThread(Socket _cs,
                       JTextArea _Logs,
                       JTable _table,
-                      TurnPermit _TP,
                       String _group_name) {
         
         cs = _cs;
         Logs = _Logs;
         table = _table;
-        TP = _TP;
         group_name = _group_name;
         
         if (cs != null) {
@@ -110,24 +107,31 @@ public class RecvThread extends Thread {
                 }
                 table.setModel(model);
                 if (info_turn.equals("YT")) {
-                    TP.MoveIsPermit = true;
+                    TurnPermit.MoveIsPermit = true;
                 } else if (info_turn.equals("ET")) {
-                    TP.MoveIsPermit = false;
+                    TurnPermit.MoveIsPermit = false;
                 }
+            } else if(command.equals("YT")) {
+                System.out.println("1");
+                TurnPermit.MoveIsPermit = true;
             } else if (command.equals("CN")) {
                 Log.AddToLog("Cell is not available!", Logs, MY_NAME);
             } else if (command.equals("EM")) { // Receive enemy info
                 int num_commands = Integer.valueOf(cdis.readUTF());
-
+                System.out.println(num_commands);
+                
                 for (int i = 0; i < num_commands; i++) {
                     String comm = cdis.readUTF();
                     String status = cdis.readUTF();
+                    
+                    System.out.println(comm);
+                    System.out.println(status);
                     
                     String row = getSubstringOfGameCommand(comm, ":", 0);
                     String col = getSubstringOfGameCommand(comm, ":", 1);
                     
                     DefaultTableModel model = (DefaultTableModel) table.getModel();
-                    model.setValueAt(status, Integer.valueOf(row) - 1, LetterToNumber(col) - 1);
+                    model.setValueAt(status, Integer.valueOf(row) - 1, LetterToNumber(col));
                 }
             } else if (command.equals("WIN")) {
                 Log.AddToLog("You win!", Logs, MY_NAME);

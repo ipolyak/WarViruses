@@ -240,7 +240,6 @@ public class ClientForm extends javax.swing.JFrame {
     private void JoinToGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_JoinToGameActionPerformed
         if(!IsConnected) {
             group_name = "Toe";
-            TP.MoveIsPermit = false;
             ConnectToServer();
             
             Sender SR = new Sender(jTextArea1, cs);  
@@ -249,7 +248,7 @@ public class ClientForm extends javax.swing.JFrame {
             if(SR.SendCommand("JG") == SEND_FAILED) {
                 Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
             } else {
-                RT = new RecvThread(cs, jTextArea1, jTable1, TP, "Toe");
+                RT = new RecvThread(cs, jTextArea1, jTable1, "Toe");
                 RT.start();
             }
         } else {
@@ -267,8 +266,7 @@ public class ClientForm extends javax.swing.JFrame {
 
     private void CreateNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateNewGameActionPerformed
         if (!IsConnected) {
-            TP.MoveIsPermit = true;
-
+            
             group_name = "Tic";
             ConnectToServer();
 
@@ -278,9 +276,11 @@ public class ClientForm extends javax.swing.JFrame {
             if (SR.SendCommand("CNG") == SEND_FAILED) {
                 Log.AddToLog("Bad command. Try again", jTextArea1, MY_NAME);
             } else {
-                RT = new RecvThread(cs, jTextArea1, jTable1, TP, "Tic");
+                RT = new RecvThread(cs, jTextArea1, jTable1, "Tic");
                 RT.start();
             }
+            
+            TurnPermit.MoveIsPermit = true;
         } else {
             Log.AddToLog("Game already running!", jTextArea1, MY_NAME);
         }
@@ -288,7 +288,8 @@ public class ClientForm extends javax.swing.JFrame {
     
     private void ClickOnCellMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ClickOnCellMouseClicked
         if (IsConnected) {
-            if (TP.MoveIsPermit) {
+            
+            if (TurnPermit.MoveIsPermit) {
                 int row, col;
                 row = jTable1.rowAtPoint(evt.getPoint()) + 1;
                 col = jTable1.columnAtPoint(evt.getPoint());
@@ -310,8 +311,8 @@ public class ClientForm extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (IsConnected) {
-           // if (RT != null) {
-               // RT.stop();
+            if (RT != null) {
+                RT.stop();
 
                 Sender SR = new Sender(jTextArea1, cs);
                 if (SR.SendCommand("DG") == SEND_FAILED) {
@@ -319,7 +320,7 @@ public class ClientForm extends javax.swing.JFrame {
                 }
                 
                 IsConnected = false;
-            //}
+            }
         }
     }//GEN-LAST:event_formWindowClosing
 

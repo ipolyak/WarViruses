@@ -10,7 +10,7 @@ package client;
  * @author Игорь
  */
 public class TurnPermit {
-    public boolean MoveIsPermit = false;
+    public static boolean MoveIsPermit = false;
     
     public TurnPermit() {
         

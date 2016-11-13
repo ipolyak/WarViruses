@@ -42,8 +42,13 @@ public class GameThread extends Thread {
 
     int count_turn_tic = 1;
     int count_turn_toe = 1;
+    
+    int countfornemysend_toe = 1; // delete_me
+    int countfornemysend_tic = 1; // delete_me
 
     boolean IsInit = true;
+    
+    boolean IsFirstMoveToe = true;
 
     public GameThread(JTextArea _Logs,
             Hashtable<String, Socket> _Players,
@@ -57,6 +62,8 @@ public class GameThread extends Thread {
         for(int i = 0; i < 3; i++) {
             MyMoves[i] = new ClientGameCommand();
         }
+        
+        GameRules.num_turn = 1;
     }
 
     private String getSubstringOfGameCommand(String command, String delimeter, int action) {
@@ -83,6 +90,8 @@ public class GameThread extends Thread {
             count_turn_tic++;
 
             if (state.equals(GameAreaParameters.CELL_STATE.CELL_EMPTY)) {
+                GameRules.num_turn++;
+                
                 if (num_tics == -1) {
                     num_tics += 2;
                 } else {
@@ -94,6 +103,8 @@ public class GameThread extends Thread {
                 ST.SendCommand(CGC_tic.command);
                 MyMoves[count_turn_tic - 1].status = "X";
             } else if (state.equals(GameAreaParameters.CELL_STATE.TOE_HERE)) {
+                GameRules.num_turn++;
+                
                 GameRules.KillToe(row, col, GameState);
                 num_toes--;
 
@@ -106,6 +117,9 @@ public class GameThread extends Thread {
                 ST.SendCommand("YT");
             } else {
                 ST.SendCommand("ET");
+                
+                Sender ST_2 = new Sender(Logs, Players.get(CGC_toe.group_name), CGC_toe.group_name); // уведомляем оппонента о начале его хода
+                ST_2.SendCommand("YT");
             }
         } else {
             Sender ST = new Sender(Logs, Players.get(CGC_tic.group_name), CGC_tic.group_name);
@@ -125,6 +139,8 @@ public class GameThread extends Thread {
             count_turn_toe++;
 
             if (state.equals(GameAreaParameters.CELL_STATE.CELL_EMPTY)) {
+                GameRules.num_turn++;
+                
                 if (num_toes == -1) {
                     num_toes += 2;
                 } else {
@@ -136,6 +152,8 @@ public class GameThread extends Thread {
                 ST.SendCommand(CGC_toe.command);
                 MyMoves[count_turn_toe - 1].status = "O";
             } else if (state.equals(GameAreaParameters.CELL_STATE.TIC_HERE)) {
+                GameRules.num_turn++;
+                
                 GameRules.KillTic(row, col, GameState);
                 num_tics--;
 
@@ -148,6 +166,9 @@ public class GameThread extends Thread {
                 ST.SendCommand("YT");
             } else {
                 ST.SendCommand("ET");
+                
+                Sender ST_2 = new Sender(Logs, Players.get(CGC_tic.group_name), CGC_tic.group_name); // уведомляем оппонента о начале его хода
+                ST_2.SendCommand("YT");
             }
         } else {
             Sender ST = new Sender(Logs, Players.get(CGC_toe.group_name), CGC_toe.group_name);
@@ -185,21 +206,26 @@ public class GameThread extends Thread {
             if (count_turn_tic > 0) {
                 Sender ST = new Sender(Logs, Players.get(CGC_toe.group_name), CGC_toe.group_name);
                 ST.SendCommand("EM");
-                ST.SendCommand(Integer.toString(count_turn_toe));
-                for (int i = 0; i < count_turn_tic; i++) {
+                ST.SendCommand(Integer.toString(count_turn_tic - countfornemysend_toe));
+                for (int i = countfornemysend_toe; i < count_turn_tic; i++) {
                     ST.SendCommand(MyMoves[i].command);
                     ST.SendCommand(MyMoves[i].status);
                 }
+                
+                countfornemysend_toe = 0;
             }
         } else {
             if (count_turn_toe > 0) {
                 Sender ST = new Sender(Logs, Players.get(CGC_tic.group_name), CGC_tic.group_name);
-                ST.SendCommand("ET");
-                ST.SendCommand(Integer.toString(count_turn_tic));
+                ST.SendCommand("EM");
+                ST.SendCommand(Integer.toString(count_turn_toe - countfornemysend_tic));
 
-                for (int i = 0; i < count_turn_toe; i++) {
+                for (int i = countfornemysend_tic; i < count_turn_toe; i++) {
                     ST.SendCommand(MyMoves[i].command);
+                    ST.SendCommand(MyMoves[i].status);
                 }
+                
+                countfornemysend_tic = 0;
             }
         }
     }
@@ -208,6 +234,7 @@ public class GameThread extends Thread {
     public void run() {
         while (!GameRules.GameIsEnd(num_tics, num_toes)) {
             if (GameRules.WhoseTurn().equals("Tic")) {
+                //System.out.println("I 5");
                 if (!IsInit) {
                     SendEnemyMoves("Toe"); // Send to tic info about toe moves
                 }
@@ -222,15 +249,24 @@ public class GameThread extends Thread {
                     }
                 }
 
-                GameRules.num_turn++;
                 HandleTicMoves();
             } else if (GameRules.WhoseTurn().equals("Toe")) {
                 if (!IsInit) {
+                   // System.out.println("I 0");
                     SendEnemyMoves("Tic"); // Send to toe info about tic moves
                 }
+                
                 count_turn_tic = 0;
+                
+                if(IsFirstMoveToe) {
+                    GameRules.num_turn = 1;
+                count_turn_toe = 1;
+                }
+                
+                IsFirstMoveToe = false;
                 IsInit = false;
                 
+                //System.out.println("I 1");
                 synchronized (CGC_toe.mutex) {
                     try {
                         CGC_toe.mutex.wait();
@@ -238,8 +274,9 @@ public class GameThread extends Thread {
                         Logger.getLogger(GameThread.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                
+                //System.out.println("I 2");
 
-                GameRules.num_turn++;
                 HandleToeMoves();
             } else {
                 Draw();

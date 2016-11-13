@@ -94,6 +94,7 @@ public class RecvThread extends Thread{
             Players.put(group_name, cs);
         } else if(command.equals("JG")) {
             Players.put(group_name, cs);
+                    CGC.group_name = group_name;
         } else if(command.equals("DG")) {
             Players.remove(group_name);
             Disconnect();
