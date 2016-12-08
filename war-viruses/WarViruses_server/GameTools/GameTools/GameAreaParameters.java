@@ -54,4 +54,42 @@ public class GameAreaParameters {
         
         GAME_STATE_INIT = Collections.unmodifiableMap(duplicate_GAME_STATE_INIT);
     }
+    
+    public static Direct[][] Directs = new Direct[10][10];
+    
+    public static void clearDirects() {
+        for(int i = 0; i < NUM_OF_ROWS; i++) {
+            for(int j = 0; j < NUM_OF_COLUMNS; j++) {
+                Directs[i][j].clearDirect();
+            }
+        }
+    }
+    
+    public static void fillDirectsForCell(String group_name, int row, int col, Map<String, Map<String, CELL_STATE>> game_state) {
+        if(group_name.equalsIgnoreCase(TICS)) {
+            for(int i = row - 1; i <= row + 1; i++) {
+                for(int j = col - 1; j <= col + 1; j++) {
+                    if((i != row || j != col) && i > 0 && i <= NUM_OF_ROWS && col >= 0 && col < NUM_OF_COLUMNS) {
+                        if(game_state.get(Integer.toString(i)).get(Column[j]).equals(CELL_STATE.TOE_KILLED) ) {
+                            Directs[i][j].directDiscovered();
+                            Directs[i][j].row = i;
+                            Directs[i][j].row = j;
+                        }
+                    }
+                }
+            }
+        } else if(group_name.equalsIgnoreCase(TOES)) {
+            for(int i = row - 1; i <= row + 1; i++) {
+                for(int j = col - 1; j <= col + 1; j++) {
+                    if((i != row || j != col) &&  i > 0 && i <= NUM_OF_ROWS && col >= 0 && col < NUM_OF_COLUMNS) {
+                        if(game_state.get(Integer.toString(i)).get(Column[j]).equals(CELL_STATE.TIC_KILLED) ) {
+                            Directs[i][j].directDiscovered();
+                            Directs[i][j].row = i;
+                            Directs[i][j].row = j;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
