@@ -14,11 +14,11 @@ public class Direct {
     public int row;
     public int column;
     
-    public Direct(int _row, int _col) {
+    public Direct() {
         boolean isDiscovered = false;
         
-        row = _row;
-        column = _col;
+        row = -1;
+        column = -1;
     }
     
     public void directDiscovered() {
