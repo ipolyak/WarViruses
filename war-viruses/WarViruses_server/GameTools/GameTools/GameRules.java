@@ -64,7 +64,7 @@ public class GameRules {
 
         for (int i = row_int - 1; i <= row_int + 1; i++) {
             for (int j = column_int - 1; j <= column_int + 1; j++) {
-                if (i != row_int || j != column_int) {
+                if ((i != row_int || j != column_int) && i > 0 && i <= GameAreaParameters.NUM_OF_ROWS && j >= 0 && j < GameAreaParameters.NUM_OF_COLUMNS) {
                     String curr_row = Integer.toString(i);
                     String curr_column = NumberToLetter(j);
                     if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TIC_HERE)) {
@@ -83,7 +83,7 @@ public class GameRules {
 
         for (int i = row_int - 1; i <= row_int + 1; i++) {
             for (int j = column_int - 1; j <= column_int + 1; j++) {
-                if ((i != row_int || j != column_int)) {
+                if ((i != row_int || j != column_int) && i > 0 && i <= GameAreaParameters.NUM_OF_ROWS && j >= 0 && j < GameAreaParameters.NUM_OF_COLUMNS) {
                     String curr_row = Integer.toString(i);
                     String curr_column = NumberToLetter(j);
                     if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TOE_HERE)) {
@@ -102,7 +102,7 @@ public class GameRules {
 
         for (int i = row_int - 1; i <= row_int + 1; i++) {
             for (int j = column_int - 1; j <= column_int + 1; j++) {
-                if (i != row_int || j != column_int) {
+                if ((i != row_int || j != column_int) && i > 0 && i <= GameAreaParameters.NUM_OF_ROWS && j >= 0 && j < GameAreaParameters.NUM_OF_COLUMNS) {
                     String curr_row = Integer.toString(i);
                     String curr_column = NumberToLetter(j);
                     if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TIC_HERE)
@@ -249,6 +249,8 @@ public class GameRules {
     }
 
     public static String NumberToLetter(int num) {
+        System.out.println(num);
+        System.out.println(GameAreaParameters.Column[num]);
         return GameAreaParameters.Column[num];
     }
 
@@ -258,7 +260,7 @@ public class GameRules {
 
         for (int i = row_int - 1; i <= row_int + 1; i++) {
             for (int j = column_int - 1; j <= column_int + 1; j++) {
-                if ((i != row_int || j != column_int)) {
+                if ((i != row_int || j != column_int) && i > 0 && i <= GameAreaParameters.NUM_OF_ROWS && j >= 0 && j < GameAreaParameters.NUM_OF_COLUMNS) {
                     String curr_row = Integer.toString(i);
                     String curr_column = NumberToLetter(j);
                     if (GameState.get(curr_row).get(curr_column).equals(GameAreaParameters.CELL_STATE.TOE_HERE)
